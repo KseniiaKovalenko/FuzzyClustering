@@ -1,5 +1,4 @@
 import numpy as np
-from time import time
 from clustering_estimation import estimations
 from collections import OrderedDict
 from numpy import array
@@ -141,51 +140,14 @@ class FuzzyRel:
         data = {}
         for data_key in range(len(X)):
             data[data_key] = X[data_key]
-
-        #t0 = time()
+            
         np_data = self.to_nparray(data)
-        #print(np_data)
-        #t1 = time()
-        #print("Data %.2g sec" % (t1-t0))
-
-        #t0 = time()
         distance_matrix = self.distances_mx(np_data)
-        #print(distance_matrix)
-        #print()
-        #t1 = time()
-        #print("Dist %.2g sec" % (t1-t0))
-
-        #t0 = time()
         c_o_r_matrix = self.norm_coefficient_of_relationship(distance_matrix)
-        #print(c_o_r_matrix)
-        #print()
-        #t1 = time()
-        #print("mu matrix %.2g sec" % (t1-t0))
-
-        #t0 = time()
         relative_c_o_r_matrix = self.relative_c_o_r(c_o_r_matrix)
-        #print()
-        #t1 = time()
-        #print("ksi rel %.2g sec" % (t1-t0))
-
-        #t0 = time()
         ksi_ab_matrix = self.ksi_ab(relative_c_o_r_matrix)
-        #print(ksi_ab_matrix)
-        #print()
-        #t1 = time()
-        #print("ksi ab %.2g sec" % (t1-t0))
-
-        #t0 = time()
         united_ksi = self.transitive_closure(ksi_ab_matrix)
-        #print(united_ksi)
-        #print()
-        #t1 = time()
-        #print("Transitive %.2g sec" % (t1-t0))
-
-        #t0 = time()
         clusters_matrix = self.make_clusters_matrix(united_ksi, data.keys())
-        #t1 = time()
-        #print("Res %.2g sec" % (t1-t0))
         
         for k, v in clusters_matrix.items():
             cluster_pred = []
@@ -200,21 +162,6 @@ class FuzzyRel:
                 return cluster_pred
             
 
-if __name__ == '__main__':
-
-    X, y = make_blobs(n_samples=100, centers=4, n_features=6,
-                      random_state=0, cluster_std=2)
-    X = StandardScaler().fit_transform(X)
-
-    data = {}
-    for data_key in range(len(X)):
-        data[data_key] = X[data_key]
-
-    fr = FuzzyRel(n_clusters=4, t_norm='min_max')
-    t0 = time()
-    cluster_labels = fr.fit_predict(X)
-    t1 = time()
-    estimations('frc', t1-t0, X, y, cluster_labels)
     
 
 
