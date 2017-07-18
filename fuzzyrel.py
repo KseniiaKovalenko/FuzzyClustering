@@ -1,10 +1,6 @@
 import numpy as np
-from time import time
-from clustering_estimation import estimations
 from collections import OrderedDict
 from numpy import array
-from sklearn.datasets.samples_generator import make_blobs
-from sklearn.preprocessing import StandardScaler
 from functools import reduce
 
 class FuzzyRel:
