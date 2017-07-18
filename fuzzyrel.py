@@ -1,4 +1,5 @@
 import numpy as np
+from time import time
 from clustering_estimation import estimations
 from collections import OrderedDict
 from numpy import array
@@ -140,7 +141,7 @@ class FuzzyRel:
         data = {}
         for data_key in range(len(X)):
             data[data_key] = X[data_key]
-            
+
         np_data = self.to_nparray(data)
         distance_matrix = self.distances_mx(np_data)
         c_o_r_matrix = self.norm_coefficient_of_relationship(distance_matrix)
@@ -148,7 +149,7 @@ class FuzzyRel:
         ksi_ab_matrix = self.ksi_ab(relative_c_o_r_matrix)
         united_ksi = self.transitive_closure(ksi_ab_matrix)
         clusters_matrix = self.make_clusters_matrix(united_ksi, data.keys())
-        
+
         for k, v in clusters_matrix.items():
             cluster_pred = []
             for keys in data.keys():
@@ -161,7 +162,3 @@ class FuzzyRel:
             if len(clusters_matrix.get(k)) == self.n_clusters:
                 return cluster_pred
             
-
-    
-
-
