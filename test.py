@@ -22,43 +22,26 @@ if __name__ == '__main__':
     X = StandardScaler().fit_transform(X)
 
     visualizer(X, y)
-    estimations('Etalon', (1 - 0), X, y, y)
-
+    estimations('Model', 0, X, y, y)
 
     brc = Birch(n_clusters=N_CLUSTERS)
-    t0 = time.time()
-    brc.fit(X)
-    cluster_labels = brc.predict(X)
-    t1 = time.time()
-
-    estimations('BIRCH', (t1 - t0), X, y, cluster_labels)
-    visualizer(X, cluster_labels)
-
-
     k_means = MiniBatchKMeans(n_clusters=N_CLUSTERS)
-    t0 = time.time()
-    k_means.fit(X)
-    cluster_labels = k_means.predict(X)
-    t1 = time.time()
-
-    estimations('K-Means++',(t1 - t0), X, y, cluster_labels)
-    visualizer(X, cluster_labels)
-
     sc = SpectralClustering(n_clusters=N_CLUSTERS)
-    t0 = time.time()
-    cluster_labels = sc.fit_predict(X)
-    t1 = time.time()
+    fr = FuzzyRel(n_clusters=N_CLUSTERS, t_norm='min_max', D = 'euclidean')
 
-    estimations('Spectral Clustering', (t1 - t0), X, y, cluster_labels)
-    visualizer(X, cluster_labels)
+    clustering_algorithms = [brc, k_means, sc, fr]
+    clustering_names = ['BIRCH', 'K-means++', 'Spectral Clustering', 'FRC']
 
-    fr = FuzzyRel(n_clusters = N_CLUSTERS, t_norm = 'min_max')#, D = 'euclidean')
-    t0 = time.time()
-    cluster_labels = fr.fit_predict(X)
-    t1 = time.time()
+    for name, algorithm in zip(clustering_names, clustering_algorithms):
+        if name ==  'BIRCH' or name == 'K-means++':
+            t0 = time.time()
+            algorithm.fit(X)
+            cluster_labels = algorithm.predict(X)
+            t1 = time.time()
+        elif name == 'Spectral Clustering' or name == 'FRC':
+            t0 = time.time()
+            cluster_labels = algorithm.fit_predict(X)
+            t1 = time.time()
 
-    estimations('FRC', (t1 - t0), X, y, cluster_labels)
-    visualizer(X, cluster_labels)
-
-
-
+        estimations(name, (t1 - t0), X, y, cluster_labels)
+        visualizer(X, cluster_labels)
